@@ -7,7 +7,7 @@ import com.mss.utils.SleepHelper;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
-public class NewThreadTest {
+public class CreateThreadTest {
     static class MyThread extends Thread {
         @Override
         public void run() {
