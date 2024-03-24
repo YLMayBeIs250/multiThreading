@@ -23,6 +23,9 @@ public class CreateThreadPoolTest {
         // keepAliveTime，非核心线程的空闲时间，超过这个时间，多余的线程会被回收。
         // TimeUnit.MILLISECONDS：时间单位，表示 keepAliveTime 的时间单位，这里是毫秒。
         // new LinkedBlockingQueue<Runnable>(1000)：工作队列，用于存放等待执行的任务。这里使用了 LinkedBlockingQueue，并指定了容量为 1000，即最多可以存放 1000 个任务。
+        // ThreadFactory：线程工厂
+        // RejectedExecutionHandler：拒绝策略
+
         // 当有新任务到来时，如果当前线程池中的线程数量小于核心线程数，则会优先创建新的线程来处理任务，即使有空闲线程存在。
         // 如果当前线程池中的线程数量已经达到核心线程数，并且工作队列未满，新任务会被放入工作队列中等待执行。
         // 当工作队列已满时，如果当前线程池中的线程数量未达到最大线程数，则会创建新的非核心线程来处理任务。
@@ -31,7 +34,9 @@ public class CreateThreadPoolTest {
                 10,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(1000));
+                new LinkedBlockingQueue<Runnable>(1000),
+                new CustomThreadFactory(),
+                new ThreadPoolExecutor.AbortPolicy());
 
         // 知识点3：
         // execute() 方法：
@@ -58,6 +63,22 @@ public class CreateThreadPoolTest {
             System.out.println(future.get());
         } catch (InterruptedException | ExecutionException e) {
             PrintHelper.printExceptionMark(e);
+        }
+    }
+
+    // 知识点4：自定义ThreadFactory来设置线程的未捕获异常处理器
+    // ==> 静态内部类是可以被实例化的。与非静态内部类不同，静态内部类在声明时使用了 static 关键字，使得它与外部类实例无关，
+    // 可以独立存在并实例化。要实例化静态内部类，可以直接通过类名来实例化，不需要先创建外部类的实例
+    static class CustomThreadFactory implements ThreadFactory {
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r);
+            // 设置线程的未捕获异常处理器
+            thread.setUncaughtExceptionHandler((t, e) -> {
+                // 这里可以自定义如何处理未捕获异常，例如记录日志等
+                System.err.println("Uncaught exception in thread " + t.getName() + ": " + e.getMessage());
+            });
+            return thread;
         }
     }
 
