@@ -9,7 +9,7 @@ public class PrintHelper {
      * @return 返回格式化的时间和当前线程名称的字符串，格式为"[当前时间] [当前线程名]"。
      */
     public static String printThreadMark() {
-        return "[" + TimeUtils.getCurrentFormattedTime() + "] [" + Thread.currentThread().getName() + "]";
+        return "[" + TimeUtils.getCurrentFormattedTime() + "] [" + Thread.currentThread().getName() + "] ";
     }
 
     /**
