@@ -10,4 +10,6 @@
 
 5，ListenableFuture类
 
+6，线程间同步（join | wait、notify、notifyAll | await、signal、signalAll）
+
 
