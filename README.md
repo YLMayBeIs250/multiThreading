@@ -12,7 +12,7 @@
 
 6，线程间同步（join | wait、notify、notifyAll | await、signal、signalAll）
 
-7，线程间同步（countDownLatch | semaphore | cyclicBarrier）
+7，线程间协作（countDownLatch | semaphore | cyclicBarrier | exchanger）
 
 8，原子引用类（AtomicStampedReference | AtomicMarkableReference）
 

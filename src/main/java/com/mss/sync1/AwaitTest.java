@@ -1,4 +1,4 @@
-package com.mss.sync;
+package com.mss.sync1;
 
 import com.mss.utils.PrintHelper;
 import com.mss.utils.SleepHelper;

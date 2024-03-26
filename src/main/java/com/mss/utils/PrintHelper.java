@@ -20,6 +20,15 @@ public class PrintHelper {
      */
     public static String printExceptionMark(Exception e) {
         String exceptionName = e.getClass().getName();
-        return ">>> 捕获到 [" + exceptionName + "] 异常.";
+        return printContentByRed(">>> 捕获到 [" + exceptionName + "] 异常.");
+    }
+
+    /**
+     * 用红色字体打印
+     * @param message
+     * @return
+     */
+    public static String printContentByRed(String message) {
+        return "\u001B[31m" + message + "\u001B[0m";
     }
 }
