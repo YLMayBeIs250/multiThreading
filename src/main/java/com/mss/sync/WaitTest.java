@@ -3,9 +3,6 @@ package com.mss.sync;
 import com.mss.utils.PrintHelper;
 import com.mss.utils.SleepHelper;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 public class WaitTest {
     public synchronized void doTaskA() {
         try {

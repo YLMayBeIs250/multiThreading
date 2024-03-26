@@ -1,4 +1,4 @@
-package com.mss.thread;
+package com.mss.create;
 
 import com.mss.utils.PrintHelper;
 import com.mss.utils.SleepHelper;

@@ -12,4 +12,9 @@
 
 6，线程间同步（join | wait、notify、notifyAll | await、signal、signalAll）
 
+7，线程间同步（countDownLatch | semaphore | cyclicBarrier）
+
+8，原子引用类（AtomicStampedReference | AtomicMarkableReference）
+
+9，TheadLocal线程本地变量
 
