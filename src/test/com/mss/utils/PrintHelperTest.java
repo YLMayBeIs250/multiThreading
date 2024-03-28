@@ -42,6 +42,7 @@ public class PrintHelperTest {
         String result = PrintHelper.printExceptionMark(nullPointerException);
         assertEquals(">>> 捕获到 [java.lang.NullPointerException] 异常.", result);
     }
+
     @Test
     public void testPrintContentByRed() {
         String expected = "\u001B[31mHello World\u001B[0m";

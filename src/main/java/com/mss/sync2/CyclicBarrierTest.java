@@ -38,7 +38,6 @@ public class CyclicBarrierTest {
         }
     }
 
-
     public static void main(String[] args) {
         // 知识点1：使用CyclicBarrier，让所有线程都执行await，也就是所有线程都准备好了之后，再去执行await后面的逻辑
         CyclicBarrier cyclicBarrier = new CyclicBarrier(3,
