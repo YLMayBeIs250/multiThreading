@@ -14,7 +14,7 @@ public class SortPrintTest2 {
 
     public static void main(String[] args) {
         // 知识点1：使用ReentrantLock的一个Condition实现线程顺序打印ABC，并循环10次
-        // FixMe:和直觉想的不一样，signal后，B与C应该争抢锁才对，结果B与C并没有争抢锁，而是按阻塞队列的顺序一次执行，待分析AQS的Condition内部类
+        // 知识点2：AQS内部有一个阻塞队列和N个条件队列，一个Condition对象就是一个条件队列，队列都是FIFO类型的，因此先进入条件队列的会先进入阻塞队列等待获得执行
         System.out.println(PrintHelper.printThreadMark() + "[使用ReentrantLock的一个Condition实现线程顺序打印ABC，并循环10次]");
         new Thread(() -> {
             try {
