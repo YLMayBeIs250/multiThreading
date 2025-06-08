@@ -5,90 +5,56 @@ import com.mss.utils.PrintHelper;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.nio.channels.SelectionKey;
-import java.util.Iterator;
+import java.util.Scanner;
 
 public class NioClient {
-    private String host;
-    private int port;
+    private SocketChannel clientChannel;
 
-    public NioClient(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public NioClient(String host, int port) throws IOException {
+        clientChannel = SocketChannel.open(new InetSocketAddress(host, port));
+        clientChannel.configureBlocking(false);
     }
 
-    public void startClient() {
-        try {
-            // 创建 Selector
-            Selector selector = Selector.open();
+    public void start() throws IOException {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Connected to server. Type messages to send:");
 
-            // 创建 SocketChannel
-            SocketChannel socketChannel = SocketChannel.open();
-            socketChannel.configureBlocking(false); // 设置为非阻塞模式
-
-            // 连接到服务器
-            socketChannel.connect(new InetSocketAddress(host, port));
-
-            // 注册到 Selector，监听连接和读取事件
-            socketChannel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-
-            System.out.println(PrintHelper.printContentByRed("Client started, trying to connect to " + host + ":" + port));
-
-            while (true) {
-                // 等待事件
-                selector.select();
-                Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
-
-                while (keys.hasNext()) {
-                    SelectionKey key = keys.next();
-                    keys.remove();
-
-                    if (key.isConnectable()) {
-                        // 完成连接
-                        SocketChannel channel = (SocketChannel) key.channel();
-                        if (channel.isConnectionPending()) {
-                            channel.finishConnect();
-                            System.out.println(PrintHelper.printContentByRed("Connected to server: " + host + ":" + port));
-                        }
-
-                        // 发送消息
-                        String message = "Hello, Server!";
-                        ByteBuffer buffer = ByteBuffer.allocate(1024);
-                        buffer.put(message.getBytes());
-                        buffer.flip();
-                        channel.write(buffer);
-                        System.out.println(PrintHelper.printContentByRed("Sent to server: " + message));
-                    }
-
-                    if (key.isReadable()) {
-                        // 读取服务器响应
-                        SocketChannel channel = (SocketChannel) key.channel();
-                        ByteBuffer buffer = ByteBuffer.allocate(1024);
-                        int bytesRead = channel.read(buffer);
-
-                        if (bytesRead > 0) {
-                            buffer.flip();
-                            byte[] data = new byte[buffer.remaining()];
-                            buffer.get(data);
-                            System.out.println(PrintHelper.printContentByRed("Received from server: " + new String(data)));
-                        } else if (bytesRead == -1) {
-                            // 服务器关闭连接
-                            System.out.println(PrintHelper.printContentByRed("Server closed the connection."));
-                            channel.close();
-                        }
-                    }
-                }
+        while (true) {
+            String message = scanner.nextLine();
+            if (message.equalsIgnoreCase("exit")) {
+                sendMessage("Client is disconnecting...");
+                break;
             }
-        } catch (IOException e) {
-            System.out.println(PrintHelper.printExceptionMark(e));
+            sendMessage(message);
+            receiveResponse();
+        }
+        scanner.close();
+        clientChannel.close();
+    }
+
+    private void sendMessage(String message) throws IOException {
+        ByteBuffer buffer = ByteBuffer.wrap(message.getBytes());
+        clientChannel.write(buffer);
+    }
+
+    private void receiveResponse() throws IOException {
+        ByteBuffer buffer = ByteBuffer.allocate(256);
+        int bytesRead = clientChannel.read(buffer);
+        if (bytesRead > 0) {
+            String response = new String(buffer.array()).trim();
+            System.out.println("Server response: " + response);
         }
     }
 
     public static void main(String[] args) {
-        NioClient client = new NioClient("localhost", 8080);
-        client.startClient();
+        try {
+            NioClient client = new NioClient("localhost", 8080);
+            client.start();
+        } catch (IOException e) {
+            System.out.println(PrintHelper.printExceptionMark(e));
+        }
     }
 }
+
 
